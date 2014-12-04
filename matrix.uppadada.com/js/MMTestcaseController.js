@@ -57,25 +57,6 @@ function MMTestcaseController(){
 }
 
 
-MMTestcaseController.prototype.loadData = function(){
-	
-	var tcCtrl = this;
-	var promise = Kinvey.DataStore.find('Testcases', null, {
-	    success: function(response) {
-	        for (var i=0;i<response.length;i++){
-	        	var newTcId = tcCtrl.addTestcase(response[i]);
-	        }
-	        $('#' + newTcId).children()[0].click();
-	    },
-	    error: function(response) {
-	    	alert(response.description);
-	    }
-	});
-	
-}
-
-
-
 MMTestcaseController.prototype.detectInputNameKeypress = function(){
 	
 	if ($("#mm_testcase_input_name").val() == ""){
@@ -89,18 +70,10 @@ MMTestcaseController.prototype.detectInputNameKeypress = function(){
 
 
 
-MMTestcaseController.prototype.addTestcase = function(tcProps){
-
-	var user = Kinvey.getActiveUser();
-	if(null === user) 
-	{
-		alert("Please login to create testcases.");
-		return;
-	}
-
-
+MMTestcaseController.prototype.addTestcase = function(){
+	
 	//Create a new testcase
-	var newTestcase = new MMTestcase(tcProps);
+	var newTestcase = new MMTestcase();
 	
 	//Add it to the table
 	this.dataTable.fnAddData( [newTestcase] );
@@ -111,9 +84,6 @@ MMTestcaseController.prototype.addTestcase = function(tcProps){
 				gApp.testcaseController.dataTable._('#' + newTestcase.id)[0].name = value;
 				$("#mm_testcase_matrix_header").html("<h3>Testcase Matrix: " + value + "</h3>");
 				this.selectedTestcase = gApp.testcaseController.dataTable._('#' + newTestcase.id)[0];
-
-				//gApp.testcaseController.updateTestcase();
-
 				return(value);
 	        },
 			{
@@ -125,25 +95,8 @@ MMTestcaseController.prototype.addTestcase = function(tcProps){
 	
 	//Select the new testcase		
 	$('#' + newTestcase.id).children()[0].click();
-
-	//Add any parameters
-	if ( (typeof(tcProps.parameters) == "undefined") || (tcProps.parameters.length == 0) ) {
-		gApp.parameterController.addParameter({});
-	} 
-
-
-	//Save to kinvey
-	if (typeof(tcProps._id) == "undefined"){
-		var promise = Kinvey.DataStore.save('Testcases', this.selectedTestcase, {
-			success   : function(response) {
-				gApp.testcaseController.selectedTestcase._id = response._id;
-			},
-			error : function(response){
-				alert(response.description);
-			}
-		});	
-	}
-
+	gApp.parameterController.addParameter();		
+	
 	//return the testcase id
 	return newTestcase.id;
 	
@@ -179,34 +132,7 @@ MMTestcaseController.prototype.removeTestcase = function(){
 		gApp.valueController.dataTable.fnClearTable();
 		
 	}
-
-	var promise = Kinvey.DataStore.destroy('Testcases', this.selectedTestcase._id, {
-	    success: function(response) {
-	        console.log("deleted");
-	    },
-	    error: function(response){
-	    	console.log(response.description);
-	    }
-	});
 		
-}
-
-
-MMTestcaseController.prototype.updateTestcase = function(){
-
-	if (this.selectedTestcase._id != null){
-
-		//Save to kinvey
-		var promise = Kinvey.DataStore.update('Testcases', this.selectedTestcase, {
-			success   : function(response) {
-				//alert(response.description);
-			},
-			error : function(response){
-				alert(response.description);
-			}
-		});	
-
-	}
 }
 
 

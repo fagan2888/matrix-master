@@ -124,7 +124,7 @@ MMMatrixController.prototype.loadMatrixForTestcase = function(oTestcase){
 				
 				
 				
-			}else{ //non-option click, toggle the 'state' (i.e. result)
+			}else{ //non-option click
 			
 				cellData.toggleState();
 					
@@ -141,8 +141,6 @@ MMMatrixController.prototype.loadMatrixForTestcase = function(oTestcase){
 			gApp.testcaseController.selectedTestcase.matrixCells = updatedMatrixCells;
 	
 			gApp.matrixController.updateStats();
-
-			gApp.testcaseController.updateTestcase();
 			
 		});
 		
@@ -253,10 +251,6 @@ MMMatrixController.prototype.editExpectedResultForCell = function(){
 				selectedTestcase.matrixCells = aCells;
 				gApp.testcaseController.selectedTestcase = gApp.testcaseController.dataTable._('#' + selectedTestcase.id)[0];
 				gApp.testcaseController.selectedTestcase.updateCells();
-
-				//Save to Kinvey
-				//gApp.testcaseController.updateTestcase();
-
 				$( this ).dialog( "close" );
 			},
 			Cancel:function(){

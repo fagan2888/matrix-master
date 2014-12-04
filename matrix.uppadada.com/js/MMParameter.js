@@ -1,54 +1,19 @@
-function MMParameter(oProps){
-
-	//ID
-	if (typeof(oProps._id) == "undefined") {
-		this.id = pguid(); //"P" + gApp.parameterCount++; 
-		this.kinvey_id = "";
-	}else{
-		this.id = this.kinvey_id = oProps._id;
-	}
-			
-
-	//NAME
-	//if (typeof(sName) == "undefined") sName = "Untitled Testcase - " + this.id;
-	(typeof(oProps.name) == "undefined") ? 
-		this.name = "Untitled Parameter" :
-		this.name = oProps.name;
+function MMParameter(sName){
 	
-	//PARAMETERS
-	(typeof(oProps.values) == "undefined") ? 
-		this.values = [] :
-		this.values = oProps.values;
+	//ID
+	this.id = "P" + gApp.parameterCount++;
+	
+	//NAME
+	if (typeof(sName) == "undefined") sName = "Untitled Parameter - " + this.id;
+	this.name = sName;
 	
 	//DT_RowID
 	this.DT_RowId = this.id;
 	
+	//VALUES
+	this.values = [];
 	
-	//EXPECTED RESULT
-	(typeof(oProps.expectedResult) == "undefined") ? 
-		this.expectedResult = "" :
-		this.expectedResult = oProps.expectedResult;
-
+	//TESTCASE (basically, a "parent" field)
+	//this.testcase = gApp.testcaseController.selectedTestcase;
 	
-}
-
-
-MMParameter.prototype.serialize = function(){
-
-	var serializedVals = [];
-	for (var i=0;i<this.values.length;i++){
-		serializedVals.push(this.values[i].serialize());
-	}
-
-	var o = {
-		_id: this.id,
-		name: this.name,
-		values: serializedVals
-	};
-
-	if (this.kinvey_id != "") o._id = this.kinvey_id;
-
-	return o;
-	
-
 }

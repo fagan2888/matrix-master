@@ -1,47 +1,23 @@
-function MMTestcase(oProps){
+function MMTestcase(sName){
 	
-	gApp.testcaseCount++; 
-
 	//ID
-	if (typeof(oProps._id) == "undefined") {
-		this.id = pguid(); //"TC" + gApp.testcaseCount;
-		this._id = null;
-	}else{
-		this.id = this._id = oProps._id;
-	}
-		
-		
+	this.id = "TC" + gApp.testcaseCount++;
 	
-
 	//NAME
-	//if (typeof(sName) == "undefined") sName = "Untitled Testcase - " + this.id;
-	(typeof(oProps.name) == "undefined") ? 
-		this.name = "Untitled Testcase" :
-		this.name = oProps.name;
+	if (typeof(sName) == "undefined") sName = "Untitled Testcase - " + this.id;
+	this.name = sName;
 	
 	//PARAMETERS
-	(typeof(oProps.parameters) == "undefined") ? 
-		this.parameters = [] :
-		this.parameters = oProps.parameters;
+	this.parameters = [];
 	
 	//DT_RowID
 	this.DT_RowId = this.id;
 	
 	//CELLS
-	(typeof(oProps.matrixCells) == "undefined") ? 
-		this.matrixCells = [] :
-		this.matrixCells = $.map(oProps.matrixCells, function(o,i){
-			var nc = new MMMatrixCell(o.token, o.values);
-			nc.testcaseId = o.testcaseId;
-			nc.expectedResult = o.expectedResult;
-			nc.resultState = o.resultState;
-			return nc;
-		});
+	this.matrixCells = [];
 	
 	//EXPECTED RESULT
-	(typeof(oProps.expectedResult) == "undefined") ? 
-		this.expectedResult = "" :
-		this.expectedResult = oProps.expectedResult;
+	this.expectedResult = "";
 		
 	//Set the parameter controller
 	//this.parameterController = new MMParameterController();
@@ -58,26 +34,6 @@ function MMTestcase(oProps){
 			
 	
 }
-
-
-MMTestcase.prototype.serialize = function(){
-
-	var serializedParams = [];
-	for (var i=0;i<this.parameters.length;i++){
-		serializedParams.push(this.parameters[i].serialize());
-	}
-
-	var o = {
-		name: this.name,
-		parameters: serializedParams		
-	};
-
-	if (this.kinvey_id != "") o._id = this.kinvey_id;
-
-	return o;
-
-}
-
 
 
 MMTestcase.prototype.updateCells = function(){
@@ -129,21 +85,6 @@ MMTestcase.prototype.updateCells = function(){
 		
 		
 	});
-
-
-	if (this._id != null){
-
-		//Save to kinvey
-		var promise = Kinvey.DataStore.update('Testcases', currentTestcase, {
-			success   : function(response) {
-				console.log("updated");
-			},
-			error : function(response){
-				alert(response.description);
-			}
-		});	
-
-	}
 	
 	
 	gApp.matrixController.loadMatrixForTestcase(this);
