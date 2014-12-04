@@ -1,10 +1,10 @@
 function MMValue(sParameterId,sName){
 	
 	//ID
-	this.id = "V" + gApp.valueCount++;
+	this.id = pguid(); //"V" + gApp.valueCount++;
 	
 	//NAME
-	if (typeof(sName) == "undefined") sName = "Untitled Value - " + this.id;
+	if (typeof(sName) == "undefined") sName = "Untitled Value";
 	this.name = sName;
 	
 	//DT_RowID
@@ -18,3 +18,17 @@ function MMValue(sParameterId,sName){
 	
 }
 
+
+
+MMValue.prototype.serialize = function(){
+
+	var o = {
+		_id: this.id,
+		name: this.name,
+		optional: this.optional
+	};
+
+	return o;
+	
+
+}
